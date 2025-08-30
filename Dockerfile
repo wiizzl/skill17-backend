@@ -11,7 +11,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run db:generate && bun run db:push
 ENV NODE_ENV=production
-ENV PORT=80
 
 EXPOSE 80
 CMD ["bun", "run", "start"]
