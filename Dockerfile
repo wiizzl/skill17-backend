@@ -1,17 +1,17 @@
-FROM oven/bun
+FROM oven/bun:alpine AS base
 
+FROM base AS deps
 WORKDIR /app
-
-COPY package.json .
-COPY bun.lock .
-
+COPY package.json bun.lock ./
 RUN bun install --production
 
-COPY src src
-COPY tsconfig.json .
-# COPY public public
-
-ENV NODE_ENV production
-CMD ["bun", "run", "start"]
+FROM base AS runner
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN bun run db:generate && bun run db:push
+ENV NODE_ENV=production
+ENV PORT=80
 
 EXPOSE 80
+CMD ["bun", "run", "start"]

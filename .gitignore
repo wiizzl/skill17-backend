@@ -42,4 +42,4 @@ package-lock.json
 **/*.bun
 
 # prisma
-generated/
+/src/generated/
